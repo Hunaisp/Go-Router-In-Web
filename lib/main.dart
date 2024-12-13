@@ -33,6 +33,15 @@ class MyApp extends StatelessWidget {
           return ParentPage(selectedHeading: heading);
         },
       ),
+
+      // Nested Parent Page with titles
+      GoRoute(
+        path: '/nested_parent/:title',
+        builder: (context, state) {
+          final title = state.pathParameters['title'] ?? 'title1';
+          return NestedParentPage(selectedTitle: title);
+        },
+      ),
     ],
   );
 }
@@ -109,7 +118,17 @@ class ParentPage extends StatelessWidget {
           // Dynamic Content
           Expanded(
             child: Center(
-              child: _getContentForHeading(selectedHeading),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _getContentForHeading(selectedHeading),
+                  SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () => context.go('/nested_parent/title1'), // Navigate to Nested Parent Page
+                    child: Text('Go to Nested Parent Page'),
+                  ),
+                ],
+              ),
             ),
           ),
         ],
@@ -133,6 +152,97 @@ class ParentPage extends StatelessWidget {
       case 'heading3':
         return Text(
           'Content for Heading 3',
+          style: TextStyle(fontSize: 24),
+        );
+      default:
+        return Text(
+          'No Content Available',
+          style: TextStyle(fontSize: 24),
+        );
+    }
+  }
+}
+
+// Nested Parent Page with Titles
+class NestedParentPage extends StatelessWidget {
+  final String selectedTitle;
+
+  const NestedParentPage({required this.selectedTitle});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Nested Parent Page'),
+      ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Titles
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              TextButton(
+                onPressed: () => context.go('/nested_parent/title1'), // Navigate to Title 1
+                child: Text(
+                  'Title 1',
+                  style: TextStyle(
+                    color: selectedTitle == 'title1' ? Colors.blue : Colors.black,
+                    fontWeight: selectedTitle == 'title1' ? FontWeight.bold : FontWeight.normal,
+                  ),
+                ),
+              ),
+              TextButton(
+                onPressed: () => context.go('/nested_parent/title2'), // Navigate to Title 2
+                child: Text(
+                  'Title 2',
+                  style: TextStyle(
+                    color: selectedTitle == 'title2' ? Colors.blue : Colors.black,
+                    fontWeight: selectedTitle == 'title2' ? FontWeight.bold : FontWeight.normal,
+                  ),
+                ),
+              ),
+              TextButton(
+                onPressed: () => context.go('/nested_parent/title3'), // Navigate to Title 3
+                child: Text(
+                  'Title 3',
+                  style: TextStyle(
+                    color: selectedTitle == 'title3' ? Colors.blue : Colors.black,
+                    fontWeight: selectedTitle == 'title3' ? FontWeight.bold : FontWeight.normal,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          Divider(),
+
+          // Dynamic Content for Titles
+          Expanded(
+            child: Center(
+              child: _getContentForTitle(selectedTitle),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Function to determine the widget for the selected title
+  Widget _getContentForTitle(String title) {
+    switch (title) {
+      case 'title1':
+        return Text(
+          'Content for Title 1',
+          style: TextStyle(fontSize: 24),
+        );
+      case 'title2':
+        return Text(
+          'Content for Title 2',
+          style: TextStyle(fontSize: 24),
+        );
+      case 'title3':
+        return Text(
+          'Content for Title 3',
           style: TextStyle(fontSize: 24),
         );
       default:
